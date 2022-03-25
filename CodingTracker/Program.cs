@@ -20,24 +20,23 @@ namespace CodingTracker
 
             MainMenu();
 
-            var databaseFunction = new DatabaseFunction();
             string input = GetMenuInput();
             switch (input)
             {
                 case "A":
                     databaseManager.AddToDatabase();
                     break;
-                //case "R":
-                //    RemoveItem();
-                //    break;
-                //case "U":
-                //    StartUpdate();
-                //    break;
-                //case "D":
-                //    ShowTable();
-                //    string userInput = GetMenuInput();
-                //    userInput = null;
-                //    break;
+                case "R":
+                    databaseManager.RemoveFromDatabase();
+                    break;
+                    //case "U":
+                    //    StartUpdate();
+                    //    break;
+                    case "D":
+                    databaseManager.ShowTable();
+                    string userInput = GetMenuInput();
+                    userInput = null;
+                    break;
                 case "E":
                     Environment.Exit(0);
                     break;

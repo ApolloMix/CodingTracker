@@ -7,11 +7,13 @@ namespace CodingTracker
     public class DatabaseManager
     {
         private static string connectionString = ConfigurationManager.AppSettings.Get("ConnectionString");
+
         public void InitializeDatabase()
         {
             DatabaseManager databaseManager = new DatabaseManager();
             databaseManager.CreateTable(connectionString);
         }
+
         public void CreateTable(string connectionString)
         {
             using(var connection = new SQLiteConnection(connectionString))
@@ -32,7 +34,7 @@ namespace CodingTracker
         public void AddToDatabase()
         {
             CodingTracker.StartSession();
-            string date = CodingTracker.StartTime.ToString();
+            string date = CodingTracker.StartTime.ToString(@"d");
 
             Console.WriteLine("Type 'stop' to end your session and log it to the database.");
 
@@ -42,7 +44,7 @@ namespace CodingTracker
             //Stops session, duration is saved to a string
             if (input == "stop") CodingTracker.EndSession();
             else if (input != "stop") Console.WriteLine("Invalid Input!");
-            string duration = CodingTracker.Duration.ToString();
+            string duration = CodingTracker.Duration.ToString(@"h\:mm\:ss");
 
             using (var connection = new SQLiteConnection(connectionString))
             {
@@ -51,6 +53,37 @@ namespace CodingTracker
                 databaseCommand.CommandText = $@"INSERT INTO CodingTime (Date, Duration)
                                                  VALUES ('{date}', '{duration}');";
                 databaseCommand.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+
+        public void RemoveFromDatabase()
+        {
+            Console.WriteLine("Which entry would you like to remove?");
+
+
+        }
+
+        public void ShowTable()
+        {
+            using (var connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+                using (SQLiteCommand command = new SQLiteCommand("SELECT * FROM CodingTime", connection))
+                {
+                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                Console.WriteLine();
+                                Console.WriteLine(reader.GetValue(i));
+                            }
+                            
+                        }
+                    }
+                }
                 connection.Close();
             }
         }
