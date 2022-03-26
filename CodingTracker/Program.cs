@@ -63,13 +63,13 @@ namespace CodingTracker
             Console.WriteLine("Type 'E' to exit program");
         }
 
-        static string GetMenuInput()
+        public static string GetMenuInput()
         {
             string userInput = Console.ReadLine().ToUpper();
             return userInput;
         }
 
-        static string GetUserInput()
+        public static string GetUserInput()
         {
             string userInput = Console.ReadLine();
             return userInput;

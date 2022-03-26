@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Data.SQLite;
 using System.Configuration;
+using System.Collections.Generic;
+using ConsoleTableExt;
 
 namespace CodingTracker
 {
     public class DatabaseManager
     {
         private static string connectionString = ConfigurationManager.AppSettings.Get("ConnectionString");
+        private static List<object> items = new List<object>();
 
         public void InitializeDatabase()
         {
@@ -59,13 +62,28 @@ namespace CodingTracker
 
         public void RemoveFromDatabase()
         {
-            Console.WriteLine("Which entry would you like to remove?");
+            Console.WriteLine("Which entry would you like to remove?\n");
+            Console.WriteLine("Enter only the row number");
 
+            ShowTable();
+
+            string input = Program.GetUserInput();
+
+            using (var connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+                var databaseCommand = connection.CreateCommand();
+                databaseCommand.CommandText = $@"DELETE FROM CodingTime
+                                                WHERE Id='{input}'";
+                databaseCommand.ExecuteNonQuery();
+                connection.Close();
+            }
 
         }
 
         public void ShowTable()
         {
+            Console.WriteLine();
             using (var connection = new SQLiteConnection(connectionString))
             {
                 connection.Open();
@@ -77,14 +95,13 @@ namespace CodingTracker
                         {
                             for (int i = 0; i < reader.FieldCount; i++)
                             {
-                                Console.WriteLine();
-                                Console.WriteLine(reader.GetValue(i));
+                                items.Add(reader.GetValue(i) + " ");
                             }
-                            
                         }
                     }
                 }
                 connection.Close();
+                ConsoleTableBuilder.From(items).ExportAndWriteLine();
             }
         }
     }
