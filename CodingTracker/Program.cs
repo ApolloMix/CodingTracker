@@ -18,29 +18,34 @@ namespace CodingTracker
             var databaseManager = new DatabaseManager();
             databaseManager.InitializeDatabase();
 
-            MainMenu();
-
-            string input = GetMenuInput();
-
-            switch (input)
+            while(true)
             {
-                case "A":
-                    databaseManager.AddToDatabase();
-                    break;
-                case "R":
-                    databaseManager.RemoveFromDatabase();
-                    break;
+                Console.Clear();
+                MainMenu();
+
+                string input = GetMenuInput();
+
+                switch (input)
+                {
+                    case "A":
+                        databaseManager.AddToDatabase();
+                        break;
+                    case "R":
+                        databaseManager.RemoveFromDatabase();
+                        break;
                     //case "U":
                     //    StartUpdate();
                     //    break;
                     case "D":
-                    databaseManager.ShowTable();
-                    string userInput = GetMenuInput();
-                    userInput = null;
-                    break;
-                case "E":
-                    Environment.Exit(0);
-                    break;
+                        databaseManager.ShowTable();
+                        string userInput = GetMenuInput();
+                        userInput = null;
+                        break;
+                    case "E":
+                        Environment.Exit(0);
+                        break;
+                }
+
             }
 
         }

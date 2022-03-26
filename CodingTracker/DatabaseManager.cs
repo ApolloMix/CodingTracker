@@ -2,17 +2,12 @@
 using System.Data.SQLite;
 using System.Configuration;
 using System.Collections.Generic;
-using ConsoleTableExt;
 
 namespace CodingTracker
 {
     public class DatabaseManager
     {
         private static string connectionString = ConfigurationManager.AppSettings.Get("ConnectionString");
-        private static List<List<object>> items;
-        private static List<object> id = new List<object>();
-        private static List<object> date = new List<object>();
-        private static List<object> duration = new List<object>();
 
         public void InitializeDatabase()
         {
@@ -96,32 +91,17 @@ namespace CodingTracker
                     {
                         while (reader.Read())
                         {
+                            Console.WriteLine();
                             for (int i = 0; i < reader.FieldCount; i++)
                             {
-                                if(i == 0)
-                                {
-                                    id.Add(reader.GetValue(i).ToString());
-                                }
-                                if(i == 1)
-                                {
-                                    date.Add(reader.GetValue(i).ToString());
-                                }
-                                if(i == 2)
-                                {
-                                    duration.Add(reader.GetValue(i).ToString());
-                                }
-                                items = new List<List<object>>
-                                {
-                                    new List<object>{id},
-                                    new List<object>{date},
-                                    new List<object>{duration},
-                                };
+                                Console.WriteLine();
+                                Console.Write(reader.GetValue(i) + " ");
                             }
+                            
                         }
                     }
                 }
                 connection.Close();
-                ConsoleTableBuilder.From(items).WithTitle("CodingTime").WithColumn("Id", "Date", "Duration").WithMinLength(new Dictionary<int, int> {{ 1, 25 },{ 2, 25 } }).ExportAndWriteLine();
             }
         }
     }
