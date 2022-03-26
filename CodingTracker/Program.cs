@@ -21,6 +21,7 @@ namespace CodingTracker
             MainMenu();
 
             string input = GetMenuInput();
+
             switch (input)
             {
                 case "A":
