@@ -2,13 +2,14 @@
 using System.Data.SQLite;
 using System.Configuration;
 using System.Collections.Generic;
+using ConsoleTableExt;
 
 namespace CodingTracker
 {
     public class DatabaseManager
     {
         private static string connectionString = ConfigurationManager.AppSettings.Get("ConnectionString");
-
+        private static List<string> items = new List<string>();
         public void InitializeDatabase()
         {
             DatabaseManager databaseManager = new DatabaseManager();
@@ -79,6 +80,37 @@ namespace CodingTracker
 
         }
 
+        public void Update()
+        {
+            Console.WriteLine("Which entry would you like to update?\n");
+            Console.WriteLine("Choose only the Id Number");
+
+            ShowTable();
+
+            string input = Program.GetUserInput();
+
+            Console.WriteLine("What is the new date you would like?");
+            Console.WriteLine("It must match the format in the table");
+
+            string newDate = Program.GetUserInput();
+
+            Console.WriteLine("What is the new time you would like?");
+            Console.WriteLine("It must match the format in the table");
+            string newDuration = Program.GetUserInput();
+
+
+            using (var connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+                var databaseCommand = connection.CreateCommand();
+                databaseCommand.CommandText = $@"UPDATE CodingTime
+                                                SET Date = '{newDate}', Duration = '{newDuration}'
+                                                WHERE Id = {input};";
+                databaseCommand.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+
         public void ShowTable()
         {
             Console.WriteLine();
@@ -91,18 +123,18 @@ namespace CodingTracker
                     {
                         while (reader.Read())
                         {
-                            Console.WriteLine();
+                            
                             for (int i = 0; i < reader.FieldCount; i++)
                             {
-                                Console.WriteLine();
-                                Console.Write(reader.GetValue(i) + " ");
+                               items.Add(Convert.ToString(reader.GetValue(i)));
                             }
-                            
                         }
                     }
                 }
                 connection.Close();
             }
+            ConsoleTableBuilder.From(items).ExportAndWrite();
+            items = new List<string>();
         }
     }
 }

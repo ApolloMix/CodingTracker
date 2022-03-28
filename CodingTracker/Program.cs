@@ -33,9 +33,9 @@ namespace CodingTracker
                     case "R":
                         databaseManager.RemoveFromDatabase();
                         break;
-                    //case "U":
-                    //    StartUpdate();
-                    //    break;
+                    case "U":
+                        databaseManager.Update();
+                        break;
                     case "D":
                         databaseManager.ShowTable();
                         string userInput = GetMenuInput();
